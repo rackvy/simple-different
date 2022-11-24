@@ -1,0 +1,206 @@
+<div class="row">
+    <div class="col-md-6">
+        <div class="block-style p-4">
+            <h4>Редактировать информацию</h4>
+            <form class="js-form needs-validation g-3" method="POST" action="">
+                {{#if error}}
+                    <div class="alert alert-danger">{{ message}}</div>
+                {{/if}}
+                {{#if success}}
+                    <div class="alert alert-success">{{ message}}</div>
+                {{/if}}
+                <div class="row">
+                    <div class="col-md-12 mb-2">
+                        <label for="validation-name" class="form-label">Название компании</label>
+                        <input type="text" class="form-control" name="name" id="validation-email" value="{{shop.name}}" required>
+                    </div>
+                    <div class="col-md-12 mb-2">
+                        <label for="validation-url" class="form-label">Адрес{{#if shop.url}} (<a href="https://simpl.tech/{{shop.url}}" target="_blank">https://simpl.tech/{{shop.url}}</a>){{/if}}</label>
+                        <div class="input-group">
+                            <span class="input-group-text" id="basic-addon3">https://simpl.tech/</span>
+                            <input 
+                                type="text" 
+                                class="form-control{{#if shop.url}} disabled-block{{/if}}" 
+                                name="url" 
+                                id="validation-url" 
+                                value="{{shop.url}}" 
+                                onkeypress="return (event.charCode >= 48 && event.charCode <= 57) || (event.charCode == 45) || (event.charCode >= 97 && event.charCode <= 122)"
+                                required
+                                >
+                        </div>
+                        {{#if shop.url}}
+                        <small class="invalid-feedback" style="display: block;">
+                            Данное поле редактировать нельзя.
+                        </small>
+                        {{else}}
+                        <small class="invalid-feedback" style="display: block;">
+                            Допускаются символы: a-z, 0-9 и -.
+                        </small>
+                        {{/if}}
+                    </div>
+                    <div class="col-md-12 mb-2">
+                        <label for="validation-email" class="form-label">E-mail для уведомлений</label>
+                        <input type="email" class="form-control" name="email" id="validation-email" value="{{#if shop.email}}{{shop.email}}{{else}}{{user.email}}{{/if}}" required>
+                    </div>
+                    <div class="col-md-12 mb-2">
+                        <label for="inputPhone" class="form-label">Телефон (для звонков и уведомлений)</label>
+                        <input type="text" class="form-control" name="phone" id="inputPhone" value="{{#if shop.phone}}{{shop.phone}}{{else}}{{user.phone}}{{/if}}" required>
+                    </div>
+                    <div class="col-md-12 mb-2">
+                        <label for="validation-wa" class="form-label">Телефон WhatsApp</label>
+                        <input type="text" class="form-control" name="wa" id="validation-wa" value="{{#if shop.wa}}{{shop.wa}}{{else}}{{user.phone}}{{/if}}">
+                    </div>
+                    <div class="col-md-12 mb-2">
+                        <label for="validation-telegram" class="form-label">Телефон Telegram</label>
+                        <input type="text" class="form-control" name="telegram" id="validation-telegram" value="{{#if shop.telegram}}{{shop.telegram}}{{else}}{{user.phone}}{{/if}}">
+                    </div>
+                    <div class="col-md-12 mb-2">
+                        <label for="validation-vk" class="form-label">Ссылка на страницу ВКонтакте</label>
+                        <input type="text" class="form-control" name="vk" id="validation-vk" value="{{shop.vk}}">
+                    </div>
+                    <div class="col-md-12 mb-2">
+                        <label for="validation-fb" class="form-label">Ссылка на страницу Facebook</label>
+                        <input type="text" class="form-control" name="fb" id="validation-fb" value="{{shop.fb}}">
+                    </div>
+                    <div class="col-md-12 mb-2">
+                        <label for="validation-instagram" class="form-label">Ссылка на страницу Instagram</label>
+                        <input type="text" class="form-control" name="instagram" id="validation-instagram" value="{{shop.instagram}}">
+                    </div>
+                    <div class="col-md-12 mb-2">
+                        <label for="validation-description" class="form-label">Описание магазина</label>
+                        <textarea class="form-control" name="description" id="validation-description" value="{{shop.description}}">{{shop.description}}</textarea>
+                    </div>
+
+                </div>
+                <input type="hidden" name="_csrf" value="{{csrf}}">
+                <input type="hidden" name="user_id" value="{{userId}}">
+                <input type="hidden" name="shopid" value="{{shop.id}}">
+                <button type="submit" class="btn btn-primary">Сохранить</button>
+            </form>
+        </div>
+    </div>
+    <div class="col-md-6">
+      <div class="block-style p-4 mb-4{{#if shop.id}} {{else}} disabled-block{{/if}}">
+        <h4>Логотип компании{{#if shop.id}} {{else}} (Сначала надо заполнить информацию о компании){{/if}}</h4>
+        {{#if shop.logo}}
+            <img src="{{shop.logo}}" class="img-fluid panel-shop-logo">
+            <p>Загрузите другой логотип</p>
+        {{else}}
+            <p>Загрузите логотип</p>
+        {{/if}}
+        <form method="POST" action="/panel/shop/add_logo" enctype="multipart/form-data">
+          <div class="form-group mb-2">
+              <div class="custom-file">
+                  <input type="file" class="custom-file-input" name="file" id="customFile">
+                  <label class="custom-file-label" id="js-custom-file-label" for="customFile">Добавить Логотип</label>
+              </div>
+          </div>
+          <input type="hidden" name="_csrf" value="{{csrf}}">
+          <input type="hidden" name="user_id" value="{{userId}}">
+          <input type="hidden" name="shopid" value="{{shop.id}}">
+          <button type="submit" class="btn btn-primary">Сохранить</button>
+        </form>
+      </div>
+      <div class="block-style p-4 mb-4{{#if shop.id}} {{else}} disabled-block{{/if}}">
+        <h4>Информация о доставке и оплате{{#if shop.id}} {{else}} (Сначала надо заполнить информацию о компании){{/if}}</h4>
+        <form method="POST" action="/panel/shop/add_del_pay">
+            <h5>Доставка (необходимо отметить)</h5>
+            <div class="form-check mb-1">
+                <input 
+                 class="form-check-input"
+                 type="checkbox" 
+                 name="delivery" 
+                 value="delivery" 
+                 id="del-v-1"
+                 {{#each shop.params_del_pay.delivery}}
+                    {{#if_eq this 'delivery'}}checked{{/if_eq}}
+                 {{/each}}
+                >
+                <label class="form-check-label" for="del-v-1">
+                    Доставка
+                </label>
+            </div>
+            <div class="form-check mb-1">
+                <input 
+                 class="form-check-input" 
+                 type="checkbox" 
+                 name="delivery" 
+                 value="pickup" 
+                 id="del-v-2"
+                 {{#each shop.params_del_pay.delivery}}
+                    {{#if_eq this 'pickup'}}checked{{/if_eq}}
+                 {{/each}}
+                >
+                <label class="form-check-label" for="del-v-2">
+                    Самовывоз из магазина
+                </label>
+            </div>
+            
+            <h5>Оплата (необходимо отметить)</h5>
+            <div class="form-check mb-1">
+                <input 
+                 class="form-check-input" 
+                 type="checkbox" 
+                 name="payment" 
+                 value="cash" 
+                 id="pay-v-1"
+                 {{#each shop.params_del_pay.payment}}
+                    {{#if_eq this 'cash'}}checked{{/if_eq}}
+                 {{/each}}
+                >
+                <label class="form-check-label" for="pay-v-1">
+                    Оплата наличными
+                </label>
+            </div>
+            <div class="form-check mb-1">
+                <input 
+                 class="form-check-input" 
+                 type="checkbox" 
+                 name="payment" 
+                 value="online" 
+                 id="pay-v-2"
+                 {{#each shop.params_del_pay.payment}}
+                    {{#if_eq this 'online'}}checked{{/if_eq}}
+                 {{/each}}
+                >
+                <label class="form-check-label" for="pay-v-2">
+                    Оплата Online картой (услугу предоставляет <a href="https://cloudpayments.ru" target="_blank">Cloudpayments</a>)
+                </label>
+            </div>
+            <div class="form-check mb-1">
+                <input 
+                 class="form-check-input" 
+                 type="checkbox" 
+                 name="payment" 
+                 value="pay_after_del" 
+                 id="pay-v-3"
+                 {{#each shop.params_del_pay.payment}}
+                    {{#if_eq this 'pay_after_del'}}checked{{/if_eq}}
+                 {{/each}}
+                >
+                <label class="form-check-label" for="pay-v-3">
+                    Оплата при получении
+                </label>
+            </div>
+            <input type="hidden" name="_csrf" value="{{csrf}}">
+            <input type="hidden" name="user_id" value="{{userId}}">
+            <input type="hidden" name="shopid" value="{{shop.id}}">
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+
+        </form>
+      </div>
+
+      <div class="block-style p-4 mb-4{{#if shop.id}} {{else}} disabled-block{{/if}}">
+        <h4>JavaScript код{{#if shop.id}} {{else}} (Сначала надо заполнить информацию о компании){{/if}}</h4>
+        <p>
+            <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="paper-plane" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" height="25px" color="#0088cc"><path fill="currentColor" d="M476 3.2L12.5 270.6c-18.1 10.4-15.8 35.6 2.2 43.2L121 358.4l287.3-253.2c5.5-4.9 13.3 2.6 8.6 8.3L176 407v80.5c0 23.6 28.5 32.9 42.5 15.8L282 426l124.6 52.2c14.2 6 30.4-2.9 33-18.2l72-432C515 7.8 493.3-6.8 476 3.2z" class=""></path></svg>
+            <a href="https://t-do.ru/simple_platform">Написать нам в Telegram</a>
+        </p>
+        <p>
+            <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="mailbox" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" height="25px"><path fill="currentColor" d="M144 64A144 144 0 0 0 0 208v208a32 32 0 0 0 32 32h256V208A144 144 0 0 0 144 64zm80 176a16 16 0 0 1-16 16H80a16 16 0 0 1-16-16v-32a16 16 0 0 1 16-16h128a16 16 0 0 1 16 16zM432 64H244.87C290.23 95.87 320 148.48 320 208v240h224a32 32 0 0 0 32-32V208A144 144 0 0 0 432 64zm80 208a16 16 0 0 1-16 16h-32a16 16 0 0 1-16-16v-48h-56a8 8 0 0 1-8-8v-16a8 8 0 0 1 8-8h104a16 16 0 0 1 16 16z" class=""></path></svg>
+            <a href="mailto:alexey@shelikhov.me">Написать нам на почту</a>
+        </p>
+        Вы можете прислать нам ваш код, мы убедимся, что он безопасен и добавим его. 
+      </div>
+    </div>
+</div>
